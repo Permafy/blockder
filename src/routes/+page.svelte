@@ -50,8 +50,30 @@
 
     import registerCore from "../resources/blocks/core.js";
     import registerControl from "../resources/blocks/control.js";
+    import registerEvents from "../resources/blocks/events.js";
+    import registerSound from "../resources/blocks/sound.js";
+    import registerSensing from "../resources/blocks/sensing.js";
+    import registerLiterals from "../resources/blocks/literals.js";
+    import registerOperators from "../resources/blocks/operators.js";
+    import registerConversions from "../resources/blocks/conversions.js";
+    import registerVariables from "../resources/blocks/variables.js";
+    import registerJSON from "../resources/blocks/json.js";
+    import registerExtensionBlocks from "../resources/blocks/blocks.js";
+    import registerFunctions from "../resources/blocks/functions.js";
+    import registerDebug from "../resources/blocks/debug.js";
     registerCore();
     registerControl();
+    registerEvents();
+    registerSound();
+    registerSensing();
+    registerLiterals();
+    registerOperators();
+    registerConversions();
+    registerVariables();
+    registerJSON();
+    registerExtensionBlocks();
+    registerFunctions();
+    registerDebug();
 
     const en = {
         rtl: false,

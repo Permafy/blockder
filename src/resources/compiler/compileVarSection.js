@@ -1,5 +1,5 @@
 const throwAwayVars = {}; // used for repeat loops
-const compileVars = {};
+export const compileVars = {};
 compileVars._idx = 0;
 compileVars.new = () => {
     const _listLow = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -15,4 +15,7 @@ compileVars.new = () => {
 compileVars.next = () => {
     compileVars._idx++;
     return `v${compileVars._idx}`;
+};
+compileVars.reset = () => {
+    compileVars._idx = 0;
 };

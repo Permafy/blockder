@@ -1,63 +1,140 @@
 <xml>
-    <category name="Logic" colour="#5C81A6">
-        <block type="logic_boolean" />
-        <block type="logic_compare" />
-        <block type="logic_operation" />
-        <block type="logic_negate" />
-        <block type="logic_null" />
-        <block type="logic_ternary" />
-    </category>
-    <category name="Loops" colour="#5CA65C">
-        <block type="controls_repeat_ext" />
-        <block type="controls_whileUntil" />
-        <block type="controls_for" />
-        <block type="controls_forEach" />
-        <block type="controls_flow_statements" />
-    </category>
-    <category name="Math" colour="#5C68A6">
-        <block type="math_number" />
-        <block type="math_arithmetic" />
-        <block type="math_single" />
-        <block type="math_trig" />
-        <block type="math_constant" />
-        <block type="math_number_property" />
-        <block type="math_round" />
-        <block type="math_on_list" />
-        <block type="math_modulo" />
-        <block type="math_constrain" />
-        <block type="math_random_int" />
-        <block type="math_random_float" />
-    </category>
-    <category name="Text" colour="#5CA65C">
-        <block type="text" />
-        <block type="text_join" />
-        <block type="text_append" />
-        <block type="text_length" />
-        <block type="text_isEmpty" />
-        <block type="text_indexOf" />
-        <block type="text_charAt" />
-        <block type="text_getSubstring" />
-        <block type="text_changeCase" />
-        <block type="text_trim" />
-    </category>
-    <category name="Lists" colour="#745BA5">
-        <block type="lists_create_with" />
-        <block type="lists_repeat" />
-        <block type="lists_length" />
-        <block type="lists_isEmpty" />
-        <block type="lists_indexOf" />
-        <block type="lists_getIndex" />
-        <block type="lists_setIndex" />
-        <block type="lists_getSublist" />
-        <block type="lists_split" />
-    </category>
-    <category name="Values" colour="#4C97FF">
-        <block type="generic_number" />
-        <block type="generic_text" />
-        <block type="generic_boolean" />
+    <category name="Events" colour="#FFBF00">
+        <block type="events_interval" />
+        <block type="events_timeout" />
     </category>
     <category name="Control" colour="#FFAB19">
+        <block type="control_wait" />
+        <block type="control_waituntil" />
+        <sep gap="48" />
+        <block type="control_repeat" />
+        <sep gap="48" />
         <block type="control_ifthen" />
         <block type="control_ifthenelse" />
+        <block type="control_ifthenreturn" />
+        <sep gap="48" />
+        <block type="control_switch" />
+        <block type="control_case" />
+        <block type="control_default" />
+        <block type="control_break" />
+    </category>
+    <category name="Sound" colour="#CF63CF">
+        <block type="sound_startsound" />
+    </category>
+    <category name="Sensing" colour="#5CB1D6">
+        <block type="sensing_alert" />
+        <block type="sensing_prompt" />
+        <block type="sensing_confirm" />
+        <sep gap="48" />
+        <block type="sensing_time" />
+        <block type="sensing_year" />
+        <block type="sensing_leapyear" />
+    </category>
+    <category name="Literals" colour="#59C08E">
+        <block type="literals_null" />
+        <block type="literals_true" />
+        <block type="literals_false" />
+        <block type="literals_number" />
+        <block type="literals_string" />
+        <block type="literals_color" />
+        <block type="literals_array" />
+        <sep gap="8" />
+        <block type="literals_arraylength" />
+        <block type="literals_object" />
+    </category>
+    <category name="Operators" colour="#59C059">
+        <block type="operators_equals" />
+        <block type="operators_strictequals" />
+        <block type="operators_more" />
+        <block type="operators_less" />
+        <sep gap="48" />
+        <block type="operators_and" />
+        <block type="operators_or" />
+        <block type="operators_not" />
+        <sep gap="48" />
+        <block type="operators_add" />
+        <block type="operators_minus" />
+        <block type="operators_multiply" />
+        <block type="operators_divide" />
+        <block type="operators_power" />
+        <sep gap="48" />
+        <block type="operators_log" />
+        <block type="operators_root" />
+        <block type="operators_adv" />
+        <sep gap="48" />
+        <block type="operators_randomint" />
+        <sep gap="48" />
+        <block type="operators_join" />
+        <block type="operators_letter" />
+    </category>
+    <category name="Conversions" colour="#8BC059">
+        <block type="conversions_tonumber" />
+        <block type="conversions_tostring" />
+        <sep gap="48" />
+        <block type="conversions_time" />
+    </category>
+    <category name="Variables" colour="#FF8C1A">
+        <block type="variable_set" />
+        <block type="variable_get" />
+        <sep gap="48" />
+        <block type="variable_setls" />
+        <block type="variable_getls" />
+    </category>
+    <category name="JSON" colour="#FF661A">
+        <block type="json_validate" />
+        <block type="json_tojson" />
+        <block type="json_tostring" />
+        <sep gap="64" />
+        <block type="json_arrayinsert" />
+        <block type="json_arrayset" />
+        <block type="json_arraymerge" />
+        <sep gap="48" />
+        <block type="json_arrayget" />
+        <block type="json_arraylength" />
+        <sep gap="64" />
+        <block type="json_objectset" />
+        <block type="json_objectmerge" />
+        <sep gap="48" />
+        <block type="json_objectget" />
+        <block type="json_objectkeys" />
+        <block type="json_objectvalues" />
+    </category>
+    <sep />
+    <category name="Blocks" colour="#FF6680">
+        <block type="blocks_create" />
+        <block type="blocks_input" />
+        <sep gap="48" />
+        <block type="blocks_get" />
+        <block type="blocks_return" />
+    </category>
+    <category name="Functions" colour="#5531D6">
+        <block type="functions_create">
+            <statement name="FUNC">
+                <block type="functions_return" />
+            </statement>
+        </block>
+        <block type="functions_inline">
+            <statement name="FUNC">
+                <block type="functions_return" />
+            </statement>
+        </block>
+        <sep gap="48" />
+        <block type="functions_return" />
+        <sep gap="48" />
+        <block type="functions_call" />
+        <block type="functions_callreporter" />
+    </category>
+    <category name="Technical" colour="#666666">
+        <block type="debug_log" />
+        <block type="debug_warn" />
+        <block type="debug_error" />
+        <sep gap="48" />
+        <block type="debug_rawblock" />
+        <block type="debug_raw" />
+        <sep gap="48" />
+        <block type="debug_comment" />
+        <block type="debug_commentstack" />
+        <sep gap="48" />
+        <block type="debug_catch" />
     </category>
 </xml>
