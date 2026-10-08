@@ -1,4 +1,4 @@
-<img src="./icon.png" width="64" height="64" /> <img src="./icon_title.png" height="64" />
+<img src="./icon.png" width="128" height="128" /> <img src="./icon_title.png" height="128" />
 
 # Permafy Blockder
 Create extensions for Permafy using block-based coding.
