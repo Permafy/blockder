@@ -1,9 +1,4 @@
 <xml>
-    <category name="Control" colour="#FFAB19">
-        <block type="control_ifthen" />
-        <block type="control_ifthenelse" />
-    </category>
-</xml>
     <category name="Logic" colour="#5C81A6">
         <block type="logic_boolean" />
         <block type="logic_compare" />
@@ -61,3 +56,8 @@
         <block type="generic_text" />
         <block type="generic_boolean" />
     </category>
+    <category name="Control" colour="#FFAB19">
+        <block type="control_ifthen" />
+        <block type="control_ifthenelse" />
+    </category>
+</xml>

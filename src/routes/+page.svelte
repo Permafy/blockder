@@ -18,6 +18,7 @@
     import Toolbox from "$lib/Toolbox/Toolbox.xml?raw";
 
     import beautify from "js-beautify";
+    import JSZip from "jszip";
     import Prism from "prismjs";
     import * as FileSaver from "file-saver";
     import fileDialog from "../resources/fileDialog";
@@ -165,25 +166,29 @@
     }
 
     function downloadProject() {
-        const project = {
+        const projectData = {
             format: "blockder-project",
             version: 1,
             projectName,
             projectID,
             extensionMetadata,
             extensionImageStates,
-            workspaceXml: Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)),
         };
-        const file = new Blob([JSON.stringify(project, null, 2)], {
-            type: "application/json",
+        const workspaceXml = Blockly.Xml.domToText(
+            Blockly.Xml.workspaceToDom(workspace)
+        );
+        const zip = new JSZip();
+        zip.file("project.json", JSON.stringify(projectData));
+        zip.folder("workspaces").file("main.xml", workspaceXml);
+        zip.generateAsync({ type: "blob" }).then((file) => {
+            FileSaver.saveAs(file, `${safeProjectName()}.pbd`);
         });
-        FileSaver.saveAs(file, `${safeProjectName()}.blockder.json`);
         openMenu = null;
     }
 
     async function loadProject() {
         const files = await fileDialog({
-            accept: ".blockder.json,.xml,application/json,text/xml",
+            accept: ".pbd,.blockder.json,.xml,application/zip,application/json,text/xml",
         });
         if (!files?.length) {
             openMenu = null;
@@ -192,17 +197,42 @@
 
         try {
             const file = files[0];
-            const contents = await file.text();
             const isXml = file.name.toLowerCase().endsWith(".xml");
-            const project = isXml ? { workspaceXml: contents } : JSON.parse(contents);
-            if (!project.workspaceXml || (!isXml && project.format !== "blockder-project")) {
-                throw new Error("This file is not a Blockder project.");
-            }
+            let project = {};
+            let workspaceXml;
 
-            const xml = Blockly.Xml.textToDom(project.workspaceXml);
+            if (isXml) {
+                workspaceXml = await file.text();
+            } else {
+                const bytes = await file.arrayBuffer();
+                const prefix = new TextDecoder().decode(bytes.slice(0, 1));
+                if (prefix === "{") {
+                    project = JSON.parse(await file.text());
+                    workspaceXml = project.workspaceXml;
+                } else {
+                    const zip = await JSZip.loadAsync(bytes);
+                    const projectFile = zip.file("project.json");
+                    if (!projectFile) {
+                        throw new Error("The archive does not contain project.json.");
+                    }
+                    project = JSON.parse(await projectFile.async("string"));
+                    workspaceXml = project.workspaceXml;
+                    if (!workspaceXml) {
+                        const workspaceFile = Object.values(zip.files).find(
+                            (entry) => !entry.dir && entry.name.startsWith("workspaces/") && entry.name.endsWith(".xml")
+                        );
+                        if (workspaceFile) {
+                            workspaceXml = await workspaceFile.async("string");
+                        }
+                    }
+                }
+            }
+            if (!workspaceXml) throw new Error("The project does not contain a workspace.");
+
+            const xml = Blockly.Xml.textToDom(workspaceXml);
             workspace.clear();
             Blockly.Xml.domToWorkspace(xml, workspace);
-            projectName = project.projectName ?? file.name.replace(/\.(blockder\.json|xml)$/i, "");
+            projectName = project.projectName ?? file.name.replace(/\.(pbd|blockder\.json|xml)$/i, "");
             projectID = project.projectID ?? "";
             if (project.extensionMetadata) {
                 Object.assign(extensionMetadata, project.extensionMetadata);

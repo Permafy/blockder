@@ -1,6 +1,6 @@
 /**
  * Preloads all audio files specified.
- * This is because the hosted version of TurboBuilder will cause a bit of a delay before playing audio
+ * This is because the hosted version of Blockder will cause a bit of a delay before playing audio
  * due to the host having to provide the file, not the local machine.
  * @param {Array} files An array full of file paths to audio files.
  */
