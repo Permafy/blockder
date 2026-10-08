@@ -1,4 +1,6 @@
 <script>
+    import { base } from "$app/paths";
+
     // Components
     import Divider from "$lib/NavigationBar/Divider.svelte";
 
@@ -20,13 +22,13 @@
 
 <div class="nav">
     <img
-        src="/favicon_any.png"
-        alt="Logo"
+        src="{base}/favicon.png"
+        alt="Blockder"
         class="logo-margin"
         style="height: 30px;"
     />
-    <button class="theme-switcher" on:click={switchTheme}>
-        <img src="/images/theme_switcher.svg" alt="Theme Switcher" />
+    <button class="theme-switcher" aria-label="Toggle color theme" title="Toggle color theme" on:click={switchTheme}>
+        <img src="{base}/images/theme_switcher.svg" alt="Theme Switcher" />
     </button>
     <Divider />
     <slot />
@@ -39,6 +41,7 @@
 
     .nav {
         position: fixed;
+        z-index: 1000;
         left: 0px;
         top: 0px;
         width: 100%;
@@ -48,7 +51,7 @@
         flex-direction: row;
         align-items: center;
 
-        background: #ff4b4b;
+        background: #8CAFFF;
     }
     .logo-margin {
         margin: 0 6px;
@@ -73,7 +76,4 @@
         background: rgba(255, 255, 255, 0.2);
     }
 
-    :global(body.dark) .nav {
-        background: #333;
-    }
 </style>

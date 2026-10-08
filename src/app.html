@@ -2,13 +2,14 @@
 <html lang="en">
 	<head>
 		<meta charset="utf-8" />
-		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<title>TurboBuilder - Make extensions with blocks</title>
+		<link rel="icon" type="image/png" href="%sveltekit.assets%/favicon.png" />
+		<link rel="icon" type="image/x-icon" href="%sveltekit.assets%/favicon.ico" />
+		<title>Blockder</title>
     	<meta name="description" content="Create TurboWarp extensions using Scratch-like block coding." />
     	<meta name="keywords" content="turbowarp, extensions, blocks" />
     	<meta name="author" content="JeremyGamer13" />
-    	<meta name="theme-color" content="#ff4b4b" />
-    	<meta name="og:image" content="/images/icon.png" />
+		<meta name="theme-color" content="#8CAFFF" />
+		<meta name="og:image" content="%sveltekit.assets%/images/icon.png" />
 		<meta name="viewport" content="width=device-width" />
 		<style id="XTI0GZwZotMzDMi0wcGctLFttIWctMdtLPXI9M0aGGDQyMHRpMViW3E="></style>
 		<style>
@@ -104,12 +105,12 @@
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div class="__alert_prompt" id="Zm5BSEgzQW5HeW9yZkFkNEhpbGJiamtpZmdoOGNDc2lMR29JSzF0K2JnPT0=">
-			<p style="margin-block: 0;">TurboBuilder is currently in development. Features may not work correctly here.</p>
+			<p style="margin-block: 0;">Blockder is currently in development. Features may not work correctly here.</p>
 			<button
 				style="margin: 0; margin-left: 8px; background: transparent; border: 0; outline: 0; padding: 0; cursor: pointer;"
 				onclick="document.getElementById('Zm5BSEgzQW5HeW9yZkFkNEhpbGJiamtpZmdoOGNDc2lMR29JSzF0K2JnPT0=').remove()"
 			>
-				<img width="24" height="24" src="/images/close.svg">
+				<img width="24" height="24" src="%sveltekit.assets%/images/close.svg">
 			</button>
 		</div>
 		<script>
@@ -181,7 +182,7 @@
 
 			window.themeUpdated_ = () => {
 				updateTheme();
-				for (const event in window.tbevents_) {
+				for (const event of window.tbevents_) {
 					if (event.type === 'THEME') {
 						event.callback();
 					}

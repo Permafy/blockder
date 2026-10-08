@@ -17,7 +17,6 @@
     // Toolbox
     import Toolbox from "$lib/Toolbox/Toolbox.xml?raw";
 
-    import JSZip from "jszip";
     import beautify from "js-beautify";
     import Prism from "prismjs";
     import * as FileSaver from "file-saver";
@@ -156,118 +155,132 @@
         });
     });
 
-    let fileMenu;
-    function showFileMenu() {
-        if (fileMenu.style.display == "none") {
-            fileMenu.style.display = "";
-            return;
-        }
-        fileMenu.style.display = "none";
+    let openMenu = null;
+    function toggleMenu(menu) {
+        openMenu = openMenu === menu ? null : menu;
+    }
+
+    function safeProjectName() {
+        return (projectName || "blockder-project").replace(/[^a-z0-9-]+/gim, "_");
     }
 
     function downloadProject() {
-        // generate file name
-        let filteredProjectName = projectName.replace(/[^a-z0-9\-]+/gim, "_");
-        let fileName = filteredProjectName + ".tbext";
-        if (!filteredProjectName) {
-            fileName = "MyProject.tbext";
-        }
-
-        // data
-        const projectData = State.serializeProject(State.currentProject);
-
-        // zip
-        const zip = new JSZip();
-        zip.file(
-            "README.txt",
-            "This file is not meant to be opened!" +
-                "\nBe careful as you can permanently break your project!"
-        );
-
-        // workspaces
-        const workspaces = zip.folder("workspaces");
-        for (const character of State.currentProject.characters) {
-            workspaces.file(character.id + ".xml", character.xml);
-        }
-
-        // data
-        const data = zip.folder("data");
-        data.file("project.json", projectData);
-
-        // download
-        zip.generateAsync({ type: "blob" }).then((blob) => {
-            FileSaver.saveAs(blob, fileName);
+        const project = {
+            format: "blockder-project",
+            version: 1,
+            projectName,
+            projectID,
+            extensionMetadata,
+            extensionImageStates,
+            workspaceXml: Blockly.Xml.domToText(Blockly.Xml.workspaceToDom(workspace)),
+        };
+        const file = new Blob([JSON.stringify(project, null, 2)], {
+            type: "application/json",
         });
+        FileSaver.saveAs(file, `${safeProjectName()}.blockder.json`);
+        openMenu = null;
     }
-    function loadProject() {
-        fileDialog({ accept: ".tbext" }).then((files) => {
-            if (!files) return;
+
+    async function loadProject() {
+        const files = await fileDialog({
+            accept: ".blockder.json,.xml,application/json,text/xml",
+        });
+        if (!files?.length) {
+            openMenu = null;
+            return;
+        }
+
+        try {
             const file = files[0];
+            const contents = await file.text();
+            const isXml = file.name.toLowerCase().endsWith(".xml");
+            const project = isXml ? { workspaceXml: contents } : JSON.parse(contents);
+            if (!project.workspaceXml || (!isXml && project.format !== "blockder-project")) {
+                throw new Error("This file is not a Blockder project.");
+            }
 
-            // set project name
-            const projectNameIdx = file.name.lastIndexOf(".tbext");
-            projectName = file.name.substring(0, projectNameIdx);
-
-            JSZip.loadAsync(file.arrayBuffer()).then(async (zip) => {
-                console.log("loaded zip file...");
-
-                // get project json from the data folder
-                const dataFolder = zip.folder("data");
-                const projectJsonString = await dataFolder
-                    .file("project.json")
-                    .async("string");
-                const projectJson = JSON.parse(projectJsonString);
-
-                // get project workspace xml stuffs
-                const workspacesFolder = zip.folder("workspaces");
-                const fileNames = [];
-                workspacesFolder.forEach((_, file) => {
-                    const fileName = file.name.replace("workspaces/", "");
-                    fileNames.push(fileName);
-                });
-                // console.log(fileNames); // debug
-                const idWorkspacePairs = {};
-                for (const fileName of fileNames) {
-                    const idx = fileName.lastIndexOf(".xml");
-                    const id = fileName.substring(0, idx);
-                    // assign to pairs
-                    idWorkspacePairs[id] = await workspacesFolder
-                        .file(fileName)
-                        .async("string");
-                }
-                // console.log(idWorkspacePairs); // debug
-
-                // laod
-                console.log(projectJson); // debug
-                State.loadProject(projectJson, idWorkspacePairs);
-            });
-        });
+            const xml = Blockly.Xml.textToDom(project.workspaceXml);
+            workspace.clear();
+            Blockly.Xml.domToWorkspace(xml, workspace);
+            projectName = project.projectName ?? file.name.replace(/\.(blockder\.json|xml)$/i, "");
+            projectID = project.projectID ?? "";
+            if (project.extensionMetadata) {
+                Object.assign(extensionMetadata, project.extensionMetadata);
+            }
+            if (project.extensionImageStates?.icon) {
+                Object.assign(extensionImageStates.icon, project.extensionImageStates.icon);
+            }
+            if (project.extensionImageStates?.menuicon) {
+                Object.assign(extensionImageStates.menuicon, project.extensionImageStates.menuicon);
+            }
+            updateGeneratedCode();
+        } catch (error) {
+            window.alert(`Could not open project: ${error.message}`);
+        }
+        openMenu = null;
     }
 
-    // code display & handling
+    function newProject() {
+        if (!workspace) return;
+        const hasContent = workspace.getAllBlocks(false).length > 0 || projectName || projectID;
+        if (hasContent && !window.confirm("Create a new project? Unsaved changes will be lost.")) {
+            return;
+        }
+        workspace.clear();
+        projectName = "";
+        projectID = "";
+        Object.assign(extensionMetadata, {
+            id: "extensionID",
+            name: "Extension",
+            docsURL: "",
+            color1: "#0088ff",
+            color2: "#0063ba",
+            color3: "",
+        });
+        for (const imageState of Object.values(extensionImageStates)) {
+            Object.assign(imageState, {
+                failed: false,
+                square: false,
+                loading: false,
+                image: "",
+            });
+        }
+        updateGeneratedCode();
+        openMenu = null;
+    }
+
+    function undo() {
+        workspace?.undo(false);
+        openMenu = null;
+    }
+
+    function redo() {
+        workspace?.undo(true);
+        openMenu = null;
+    }
+
+    function clearWorkspace() {
+        if (workspace && window.confirm("Clear all blocks from the workspace?")) {
+            workspace.clear();
+        }
+        openMenu = null;
+    }
+
     function beautifyGeneratedCode(code) {
-        const beautified = beautify.js(code, {
+        return beautify.js(code, {
             indent_size: 4,
             space_in_empty_paren: true,
         });
-        return beautified;
-    }
-    function displayGeneratedCode(code) {
-        const beautified = beautifyGeneratedCode(code);
-        const highlighted = Prism.highlight(
-            beautified,
-            Prism.languages.javascript
-        );
-        return highlighted;
     }
 
-    // image importing
+    function displayGeneratedCode(code) {
+        const beautified = beautifyGeneratedCode(code);
+        return Prism.highlight(beautified, Prism.languages.javascript);
+    }
+
     function extensionIconAdded(event) {
-        console.log(event);
         const filePicker = event.target;
-        // check if we have a file
         if (!filePicker.files || !filePicker.files[0]) {
-            // remove the image
             extensionImageStates.icon.failed = false;
             extensionImageStates.icon.square = false;
             extensionImageStates.icon.loading = false;
@@ -275,39 +288,32 @@
             updateGeneratedCode();
             return;
         }
-        const file = filePicker.files[0];
 
-        extensionImageStates.icon.loading = true;
         const fileReader = new FileReader();
+        extensionImageStates.icon.loading = true;
         fileReader.onload = () => {
-            // file finished loading
             const url = fileReader.result;
             extensionImageStates.icon.image = url;
             updateGeneratedCode();
-            // start checking the other stuff
             const image = new Image();
             image.onload = () => {
                 extensionImageStates.icon.failed = false;
                 extensionImageStates.icon.square = image.width === image.height;
-                // mark as loading finished
                 extensionImageStates.icon.loading = false;
             };
             image.onerror = () => {
                 extensionImageStates.icon.failed = true;
                 extensionImageStates.icon.square = false;
-                // mark as loading finished
                 extensionImageStates.icon.loading = false;
             };
             image.src = url;
         };
-        fileReader.readAsDataURL(file);
+        fileReader.readAsDataURL(filePicker.files[0]);
     }
 
-    // validation
     function isExtensionIDInvalid(id) {
         return Boolean(String(id).match(/[^a-z0-9]/gim));
     }
-
     // Modals
     const ModalState = {
         extensionColors: false,
@@ -338,8 +344,8 @@
     />
 {/if}
 <NavigationBar>
-    <NavigationButton>File</NavigationButton>
-    <NavigationButton>Edit</NavigationButton>
+    <NavigationButton on:click={() => toggleMenu("file")}>File</NavigationButton>
+    <NavigationButton on:click={() => toggleMenu("edit")}>Edit</NavigationButton>
     <NavigationDivider />
     <input
         class="project-name"
@@ -351,7 +357,7 @@
         on:change={updateGeneratedCode}
     />
     {#if isExtensionIDInvalid(projectID)}
-        <p style="color:white;margin-left:4px">
+        <p style="color:#172033;margin-left:4px">
             <b>Extension ID must be only letters and numbers.</b>
         </p>
     {/if}
@@ -365,6 +371,23 @@
         on:change={updateGeneratedCode}
     />
 </NavigationBar>
+{#if openMenu}
+    <button class="menu-dismiss" aria-label="Close menu" on:click={() => (openMenu = null)}></button>
+    <div class:menu-edit={openMenu === "edit"} class="menu-dropdown" role="menu">
+        {#if openMenu === "file"}
+            <button role="menuitem" on:click={newProject}>New project</button>
+            <button role="menuitem" on:click={loadProject}>Open project...</button>
+            <button role="menuitem" on:click={downloadProject}>Save project</button>
+            <div class="menu-credit">
+                Fork of <a href="https://github.com/JeremyGamer13/turbobuilder" target="_blank" rel="noreferrer">TurboBuilder</a> by JeremyGamer13
+            </div>
+        {:else}
+            <button role="menuitem" on:click={undo}>Undo</button>
+            <button role="menuitem" on:click={redo}>Redo</button>
+            <button role="menuitem" on:click={clearWorkspace}>Clear workspace</button>
+        {/if}
+    </div>
+{/if}
 <div class="main">
     <div class="row-menus">
         <div class="row-first-submenus">
@@ -555,6 +578,54 @@
         border: 1px solid dodgerblue;
     }
 
+    .menu-dismiss {
+        position: fixed;
+        inset: 0;
+        z-index: 1001;
+        width: 100%;
+        height: 100%;
+        border: 0;
+        background: transparent;
+    }
+    .menu-dropdown {
+        position: fixed;
+        z-index: 1002;
+        top: var(--nav-height);
+        left: 0;
+        min-width: 190px;
+        padding: 4px;
+        background: white;
+        color: #172033;
+        border: 1px solid #d4d9e3;
+        box-shadow: 0 6px 18px rgba(20, 30, 50, 0.2);
+    }
+    .menu-dropdown.menu-edit {
+        left: 3.5rem;
+    }
+    .menu-dropdown button {
+        display: block;
+        width: 100%;
+        padding: 8px 10px;
+        border: 0;
+        background: transparent;
+        color: inherit;
+        text-align: left;
+        cursor: pointer;
+    }
+    .menu-dropdown button:hover {
+        background: #e8efff;
+    }
+    .menu-credit {
+        margin-top: 4px;
+        padding: 8px 10px 4px;
+        border-top: 1px solid #d4d9e3;
+        font-size: 0.75rem;
+        line-height: 1.4;
+    }
+    .menu-credit a {
+        color: #315ca8;
+    }
+
     .main {
         position: absolute;
         left: 0px;
@@ -579,11 +650,12 @@
         font-weight: bold;
         font-size: 1rem;
         padding: 0.5rem;
+        color: #172033;
         transition: 0.25s;
     }
     .project-name::placeholder {
         font-weight: normal;
-        color: white;
+        color: #405071;
         opacity: 1;
         font-style: italic;
     }
@@ -608,6 +680,12 @@
     :global(body.dark) .project-name[data-invalid="true"] {
         background-color: #9b0000 !important;
         text-decoration: red underline;
+    }
+    :global(body.dark) .project-name {
+        color: #172033;
+    }
+    :global(body.dark) .project-name::placeholder {
+        color: #405071;
     }
 
     .extensionIcon {

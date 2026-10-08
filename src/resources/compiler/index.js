@@ -17,8 +17,8 @@ class Compiler {
 
         const headerCode = [
             `/*`,
-            `   This extension was made with TurboBuilder!`,
-            `   https://turbobuilder.vercel.app/`,
+            `   This extension was made with Blockder!`,
+            `   https://permafy.github.io/blockder`,
             `*/`,
             `(function (Scratch) {`,
             `const variables = {};`

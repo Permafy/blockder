@@ -1,4 +1,5 @@
 <script>
+    import { base } from "$app/paths";
     import { createEventDispatcher, onMount } from "svelte";
     import EventManager from "../../resources/events";
     import ModalScript from "./createblock.js";
@@ -187,7 +188,7 @@
                         <div style="height:4px" />
                         <img
                             alt="Label"
-                            src="/images/blockBuilder/block_label.svg"
+                            src="{base}/images/blockBuilder/block_label.svg"
                             height={50}
                         />
                     </button>
@@ -196,7 +197,7 @@
                         <div style="height:4px" />
                         <img
                             alt="Text input"
-                            src="/images/blockBuilder/block_input_text.svg"
+                            src="{base}/images/blockBuilder/block_input_text.svg"
                             height={50}
                         />
                     </button>
@@ -205,7 +206,7 @@
                         <div style="height:4px" />
                         <img
                             alt="Number input"
-                            src="/images/blockBuilder/block_input_number.svg"
+                            src="{base}/images/blockBuilder/block_input_number.svg"
                             height={50}
                         />
                     </button>
@@ -214,7 +215,7 @@
                         <div style="height:4px" />
                         <img
                             alt="Boolean input"
-                            src="/images/blockBuilder/block_boolean.svg"
+                            src="{base}/images/blockBuilder/block_boolean.svg"
                             height={50}
                         />
                     </button>
@@ -223,7 +224,7 @@
                         <div style="height:4px" />
                         <img
                             alt="Color input"
-                            src="/images/blockBuilder/block_input_color.svg"
+                            src="{base}/images/blockBuilder/block_input_color.svg"
                             height={50}
                         />
                     </button>
@@ -238,7 +239,7 @@
                             <div style="height:4px" />
                             <img
                                 alt="Angle input"
-                                src="/images/blockBuilder/block_input_angle.svg"
+                                src="{base}/images/blockBuilder/block_input_angle.svg"
                                 height={50}
                             />
                         </button>
@@ -247,7 +248,7 @@
                             <div style="height:4px" />
                             <img
                                 alt="Matrix input"
-                                src="/images/blockBuilder/block_input_matrix.svg"
+                                src="{base}/images/blockBuilder/block_input_matrix.svg"
                                 height={50}
                             />
                         </button>
@@ -256,7 +257,7 @@
                             <div style="height:4px" />
                             <img
                                 alt="Note input"
-                                src="/images/blockBuilder/block_input_note.svg"
+                                src="{base}/images/blockBuilder/block_input_note.svg"
                                 height={50}
                             />
                         </button>
@@ -266,7 +267,7 @@
                             <!-- svelte-ignore a11y-img-redundant-alt -->
                             <img
                                 alt="Image Label"
-                                src="/images/blockBuilder/block_label_image.svg"
+                                src="{base}/images/blockBuilder/block_label_image.svg"
                                 height={50}
                             />
                         </button>
@@ -275,7 +276,7 @@
                             <div style="height:4px" />
                             <img
                                 alt="Empty Input"
-                                src="/images/blockBuilder/block_empty.svg"
+                                src="{base}/images/blockBuilder/block_empty.svg"
                                 height={50}
                             />
                         </button>
@@ -284,7 +285,7 @@
                             <div style="height:4px" />
                             <img
                                 alt="Empty"
-                                src="/images/blockBuilder/block_label_none.svg"
+                                src="{base}/images/blockBuilder/block_label_none.svg"
                                 height={50}
                             />
                         </button>

@@ -27,7 +27,7 @@
 
         font-weight: bold;
         font-size: 0.75rem;
-        color: white;
+        color: #172033;
         background: transparent;
         cursor: pointer;
         border: 0;

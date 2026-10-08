@@ -4,3 +4,60 @@
         <block type="control_ifthenelse" />
     </category>
 </xml>
+    <category name="Logic" colour="#5C81A6">
+        <block type="logic_boolean" />
+        <block type="logic_compare" />
+        <block type="logic_operation" />
+        <block type="logic_negate" />
+        <block type="logic_null" />
+        <block type="logic_ternary" />
+    </category>
+    <category name="Loops" colour="#5CA65C">
+        <block type="controls_repeat_ext" />
+        <block type="controls_whileUntil" />
+        <block type="controls_for" />
+        <block type="controls_forEach" />
+        <block type="controls_flow_statements" />
+    </category>
+    <category name="Math" colour="#5C68A6">
+        <block type="math_number" />
+        <block type="math_arithmetic" />
+        <block type="math_single" />
+        <block type="math_trig" />
+        <block type="math_constant" />
+        <block type="math_number_property" />
+        <block type="math_round" />
+        <block type="math_on_list" />
+        <block type="math_modulo" />
+        <block type="math_constrain" />
+        <block type="math_random_int" />
+        <block type="math_random_float" />
+    </category>
+    <category name="Text" colour="#5CA65C">
+        <block type="text" />
+        <block type="text_join" />
+        <block type="text_append" />
+        <block type="text_length" />
+        <block type="text_isEmpty" />
+        <block type="text_indexOf" />
+        <block type="text_charAt" />
+        <block type="text_getSubstring" />
+        <block type="text_changeCase" />
+        <block type="text_trim" />
+    </category>
+    <category name="Lists" colour="#745BA5">
+        <block type="lists_create_with" />
+        <block type="lists_repeat" />
+        <block type="lists_length" />
+        <block type="lists_isEmpty" />
+        <block type="lists_indexOf" />
+        <block type="lists_getIndex" />
+        <block type="lists_setIndex" />
+        <block type="lists_getSublist" />
+        <block type="lists_split" />
+    </category>
+    <category name="Values" colour="#4C97FF">
+        <block type="generic_number" />
+        <block type="generic_text" />
+        <block type="generic_boolean" />
+    </category>
